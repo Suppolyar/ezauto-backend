@@ -18,7 +18,7 @@ import { CarModule } from '../car/car.module';
       synchronize: true,
     }),
     AuthModule,
-    CarModule
+    CarModule,
   ],
 })
 export class AppModule {}

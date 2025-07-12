@@ -40,7 +40,9 @@ export class CarService {
   }
 
   async update(id: string, dto: Partial<CreateCarDto>, userId: string) {
-    const car = await this.carRepo.findOne({ where: { id, user: { id: +userId } } });
+    const car = await this.carRepo.findOne({
+      where: { id, user: { id: +userId } },
+    });
     if (!car) throw new Error('Car not found');
     Object.assign(car, dto);
     return this.carRepo.save(car);

@@ -24,7 +24,10 @@ export class AuthService {
     return { accessToken: this.jwtService.sign({ sub: user.id }) };
   }
 
-  async validateUser(email: string, pass: string): Promise<{ accessToken: string }> {
+  async validateUser(
+    email: string,
+    pass: string,
+  ): Promise<{ accessToken: string }> {
     const user = await this.userRepo.findOne({ where: { email } });
 
     if (!user) throw new UnauthorizedException('User not found');

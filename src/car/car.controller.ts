@@ -41,7 +41,11 @@ export class CarController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() dto: Partial<CreateCarDto>, @Request() req: AuthRequest) {
+  update(
+    @Param('id') id: string,
+    @Body() dto: Partial<CreateCarDto>,
+    @Request() req: AuthRequest,
+  ) {
     return this.carService.update(id, dto, req.user.userId);
   }
 
