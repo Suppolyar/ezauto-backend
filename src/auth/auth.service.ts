@@ -17,10 +17,13 @@ export class AuthService {
 
   async register(dto: RegisterDto): Promise<{ accessToken: string }> {
     const user = this.userRepo.create({
+      name: dto.name,
       email: dto.email,
       passwordHash: await bcrypt.hash(dto.password, 10),
     });
+
     await this.userRepo.save(user);
+
     return { accessToken: this.jwtService.sign({ sub: user.id }) };
   }
 
