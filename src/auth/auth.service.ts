@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -16,6 +16,12 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto): Promise<{ accessToken: string }> {
+    const existingUser = await this.userRepo.findOne({
+      where: { email: dto.email },
+    });
+    if (existingUser) {
+      throw new ConflictException('Пользователь с таким email уже существует');
+    }
     const user = this.userRepo.create({
       name: dto.name,
       email: dto.email,
@@ -27,10 +33,7 @@ export class AuthService {
     return { accessToken: this.jwtService.sign({ sub: user.id }) };
   }
 
-  async validateUser(
-    email: string,
-    pass: string,
-  ): Promise<{ accessToken: string }> {
+  async validateUser(email: string, pass: string): Promise<{ accessToken: string }> {
     const user = await this.userRepo.findOne({ where: { email } });
 
     if (!user) throw new UnauthorizedException('User not found');
