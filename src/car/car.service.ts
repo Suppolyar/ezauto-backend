@@ -16,6 +16,7 @@ export class CarService {
       ...dto,
       user: { id: +userId }, // Приведение к числу, если User.id — number
     });
+
     return this.carRepo.save(car);
   }
 
@@ -43,8 +44,10 @@ export class CarService {
     const car = await this.carRepo.findOne({
       where: { id, user: { id: +userId } },
     });
+
     if (!car) throw new Error('Car not found');
     Object.assign(car, dto);
+
     return this.carRepo.save(car);
   }
 
