@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
-import { User } from '../entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
-import { Car } from '../entities/car.entity';
 import { CarModule } from '../car/car.module';
 import { ProfileModule } from '../profile/profile.module';
 
@@ -13,10 +11,10 @@ import { ProfileModule } from '../profile/profile.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: __dirname + '/../../db.sqlite',
-      entities: [User, Car],
-      synchronize: true,
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      autoLoadEntities: true,
+      synchronize: false,
     }),
     AuthModule,
     CarModule,
