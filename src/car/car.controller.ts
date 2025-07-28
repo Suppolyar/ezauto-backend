@@ -8,11 +8,20 @@ import {
   Put,
   UseGuards,
   Request,
+  NotFoundException,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/strategiest/jwt-auth.guard';
 import { CarService } from './car.service';
 import { CreateCarDto } from './dto/create-car.dto';
+import { CarResponseDto } from './dto/car-response.dto';
 import { Request as ExpressRequest } from 'express';
+import { mapCarToDto, mapCarsToDtos } from './lib/map-car-to-dto';
 
 interface AuthRequest extends ExpressRequest {
   user: {
@@ -20,37 +29,66 @@ interface AuthRequest extends ExpressRequest {
   };
 }
 
-@Controller('cars')
+@ApiTags('Car')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+@Controller('cars')
 export class CarController {
   constructor(private readonly carService: CarService) {}
 
   @Post()
-  create(@Body() dto: CreateCarDto, @Request() req: AuthRequest) {
-    return this.carService.create(dto, req.user.userId);
+  @ApiOperation({ summary: 'Create a new car' })
+  @ApiResponse({ status: 201, type: CarResponseDto })
+  async create(
+    @Body() dto: CreateCarDto,
+    @Request() req: AuthRequest,
+  ): Promise<CarResponseDto> {
+    const car = await this.carService.create(dto, req.user.userId);
+
+    return mapCarToDto(car);
   }
 
   @Get()
-  findMy(@Request() req: AuthRequest) {
-    return this.carService.findMyCars(req.user.userId);
+  @ApiOperation({ summary: 'Get all cars for the current user' })
+  @ApiResponse({ status: 200, type: [CarResponseDto] })
+  async findMy(@Request() req: AuthRequest): Promise<CarResponseDto[]> {
+    const cars = await this.carService.findMyCars(req.user.userId);
+
+    return mapCarsToDtos(cars);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Request() req: AuthRequest) {
-    return this.carService.findOne(id, req.user.userId);
+  @ApiOperation({ summary: 'Get a specific car by ID' })
+  @ApiResponse({ status: 200, type: CarResponseDto })
+  @ApiResponse({ status: 404, description: 'Car not found' })
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: AuthRequest,
+  ): Promise<CarResponseDto> {
+    const car = await this.carService.findOne(id, req.user.userId);
+
+    if (!car) throw new NotFoundException('Car not found');
+
+    return mapCarToDto(car);
   }
 
   @Put(':id')
-  update(
+  @ApiOperation({ summary: 'Update a car by ID' })
+  @ApiResponse({ status: 200, type: CarResponseDto })
+  async update(
     @Param('id') id: string,
     @Body() dto: Partial<CreateCarDto>,
     @Request() req: AuthRequest,
-  ) {
-    return this.carService.update(id, dto, req.user.userId);
+  ): Promise<CarResponseDto> {
+    const car = await this.carService.update(id, dto, req.user.userId);
+
+    return mapCarToDto(car);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @Request() req: AuthRequest) {
+  @ApiOperation({ summary: 'Delete a car by ID' })
+  @ApiResponse({ status: 204, description: 'Car successfully deleted' })
+  remove(@Param('id') id: string, @Request() req: AuthRequest): Promise<void> {
     return this.carService.remove(id, req.user.userId);
   }
 }

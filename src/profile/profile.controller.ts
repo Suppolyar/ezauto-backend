@@ -1,10 +1,25 @@
-import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Request,
+  NotFoundException,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/strategiest/jwt-auth.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { JwtUserPayload } from '../auth/types/jwt-payload';
+import { ProfileResponseDto } from './dto/profile-response.dto';
 
+@ApiTags('Profile')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('profile')
 export class ProfileController {
@@ -14,7 +29,12 @@ export class ProfileController {
   ) {}
 
   @Get()
-  async getProfile(@Request() req: Request & { user: JwtUserPayload }) {
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({ status: 200, type: ProfileResponseDto })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getProfile(
+    @Request() req: Request & { user: JwtUserPayload },
+  ): Promise<ProfileResponseDto> {
     const userId = req.user.id;
 
     const user = await this.usersRepo.findOne({
@@ -23,11 +43,15 @@ export class ProfileController {
       select: ['id', 'email', 'name'],
     });
 
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     return {
-      id: user?.id,
-      email: user?.email,
-      name: user?.name,
-      carsCount: user?.cars.length,
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      carsCount: user.cars.length,
     };
   }
 }
