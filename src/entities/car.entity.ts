@@ -16,6 +16,9 @@ export class Car {
   @Column({ unique: true })
   vin!: string;
 
+  @Column({ default: 'base' })
+  type!: 'base' | 'sport' | 'luxury';
+
   @Column()
   brand!: string;
 
