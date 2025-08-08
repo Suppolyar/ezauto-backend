@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { User } from '../entities/user.entity';
-import { RegisterDto } from './dto/register.dto';
+import { RegisterDto } from '../dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +23,7 @@ export class AuthService {
     const existingUser = await this.userRepo.findOne({
       where: { email: dto.email },
     });
+
     if (existingUser) {
       throw new ConflictException('Пользователь с таким email уже существует');
     }

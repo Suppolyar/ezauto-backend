@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { MaintenanceRecommendationDto } from './dto/maintenance-recommendation.dto';
-import { MaintenanceRegulation } from '../entities/maintenance-regulation.entity';
-import { Car } from '../entities/car.entity';
+import { MaintenanceRecommendationDto } from '../dto/maintenance-recommendation.dto';
+import { MaintenanceRegulation } from '../../../entities/maintenance-regulation.entity';
+import { Car } from '../../../entities/car.entity';
 
 @Injectable()
 export class MaintenanceService {

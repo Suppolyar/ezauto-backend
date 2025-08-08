@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
+import { User } from '../modules/auth/entities/user.entity';
 
 @Entity()
 export class Car {

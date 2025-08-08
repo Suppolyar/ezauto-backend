@@ -1,5 +1,5 @@
 // src/car/lib/mapCarToDto.ts
-import { Car } from '../../entities/car.entity';
+import { Car } from '../../../entities/car.entity';
 import { CarResponseDto } from '../dto/car-response.dto';
 
 export const mapCarToDto = (car: Car): CarResponseDto => ({

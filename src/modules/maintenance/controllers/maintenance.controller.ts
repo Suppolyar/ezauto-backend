@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 
-import { MaintenanceService } from './maintenance.service';
-import { MaintenanceRecommendationResponseDto } from './dto/maintenance-recommendation-response.dto';
-import { Car } from '../entities/car.entity';
+import { MaintenanceService } from '../services/maintenance.service';
+import { MaintenanceRecommendationResponseDto } from '../dto/maintenance-recommendation-response.dto';
+import { Car } from '../../../entities/car.entity';
 
 @ApiTags('Maintenance')
 @Controller('cars/:id/maintenance')

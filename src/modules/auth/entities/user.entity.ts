@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Car } from './car.entity';
+import { Car } from '../../../entities/car.entity';
 
 @Entity()
 export class User {
