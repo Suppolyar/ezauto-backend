@@ -16,12 +16,12 @@ import {
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/strategiest/jwt-auth.guard';
-import { CarService } from './car.service';
-import { CreateCarDto } from './dto/create-car.dto';
-import { CarResponseDto } from './dto/car-response.dto';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { CarService } from '../services/car.service';
+import { CreateCarDto } from '../dto/create-car.dto';
+import { CarResponseDto } from '../dto/car-response.dto';
 import { Request as ExpressRequest } from 'express';
-import { mapCarToDto, mapCarsToDtos } from './lib/map-car-to-dto';
+import { mapCarToDto, mapCarsToDtos } from '../lib/map-car-to-dto';
 
 interface AuthRequest extends ExpressRequest {
   user: {

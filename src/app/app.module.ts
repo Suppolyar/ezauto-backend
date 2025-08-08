@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '../modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { CarModule } from '../car/car.module';
-import { ProfileModule } from '../profile/profile.module';
-import { MaintenanceModule } from '../maintenance/maintenance.module';
+import { CarModule } from '../modules/car/car.module';
+import { ProfileModule } from '../modules/profile/profile.module';
+import { MaintenanceModule } from '../modules/maintenance/maintenance.module';
+import configuration from '../config/configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [configuration],
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',

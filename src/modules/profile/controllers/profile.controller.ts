@@ -11,12 +11,12 @@ import {
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/strategiest/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
-import { JwtUserPayload } from '../auth/types/jwt-payload';
-import { ProfileResponseDto } from './dto/profile-response.dto';
+import { User } from '../../auth/entities/user.entity';
+import { JwtUserPayload } from '../../../shared/types/jwt-payload';
+import { ProfileResponseDto } from '../dto/profile-response.dto';
 
 @ApiTags('Profile')
 @ApiBearerAuth()
