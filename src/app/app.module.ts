@@ -6,6 +6,8 @@ import { CarModule } from '../modules/car/car.module';
 import { ProfileModule } from '../modules/profile/profile.module';
 import { MaintenanceModule } from '../modules/maintenance/maintenance.module';
 import { NotificationsModule } from '../modules/notifications/notifications.module';
+import { WorkshopsModule } from '../modules/workshops/workshops.module';
+import { WorkshopsAdminModule } from '../modules/workshops-admin/workshops-admin.module';
 import configuration from '../config/configuration';
 
 @Module({
@@ -29,6 +31,8 @@ import configuration from '../config/configuration';
     ProfileModule,
     MaintenanceModule,
     NotificationsModule,
+    WorkshopsModule,
+    WorkshopsAdminModule,
   ],
 })
 export class AppModule {}

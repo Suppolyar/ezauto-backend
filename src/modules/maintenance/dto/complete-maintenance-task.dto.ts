@@ -5,6 +5,7 @@ import {
   IsString,
   IsDateString,
   Min,
+  IsUUID,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -29,4 +30,11 @@ export class CompleteMaintenanceTaskDto {
   @IsOptional()
   @IsDateString()
   performedAt?: string;
+
+  @ApiPropertyOptional({
+    description: 'Optional campaign redemption identifier to tie the visit',
+  })
+  @IsOptional()
+  @IsUUID()
+  campaignRedemptionId?: string;
 }

@@ -111,6 +111,7 @@ export class MaintenanceController {
         mileage: dto.mileage,
         notes: dto.notes,
         performedAt: dto.performedAt ? new Date(dto.performedAt) : undefined,
+        redemptionId: dto.campaignRedemptionId,
       },
     });
 

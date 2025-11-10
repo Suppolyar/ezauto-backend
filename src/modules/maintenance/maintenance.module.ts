@@ -9,6 +9,7 @@ import { MaintenanceTask } from '../../entities/maintenance-task.entity';
 import { MaintenanceLog } from '../../entities/maintenance-log.entity';
 import { MaintenancePlannerService } from './services/maintenance-planner.service';
 import { MaintenanceTasksService } from './services/maintenance-tasks.service';
+import { WorkshopCampaignRedemption } from '../../entities/workshop-campaign-redemption.entity';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { MaintenanceTasksService } from './services/maintenance-tasks.service';
       Car,
       MaintenanceTask,
       MaintenanceLog,
+      WorkshopCampaignRedemption,
     ]),
   ],
   controllers: [MaintenanceController],

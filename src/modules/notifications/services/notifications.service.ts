@@ -14,6 +14,7 @@ import {
 import { User } from '../../auth/entities/user.entity';
 import { RegisterPushTokenDto } from '../dto/register-push-token.dto';
 import { PushService } from './push.service';
+import { WorkshopOffersService } from '../../workshops/services/workshop-offers.service';
 
 @Injectable()
 export class NotificationsService {
@@ -27,6 +28,7 @@ export class NotificationsService {
     @InjectRepository(MaintenanceTask)
     private readonly maintenanceTasksRepo: Repository<MaintenanceTask>,
     private readonly pushService: PushService,
+    private readonly workshopOffersService: WorkshopOffersService,
   ) {}
 
   list(userId: number) {
@@ -87,6 +89,8 @@ export class NotificationsService {
         continue;
       }
 
+      const offers = await this.workshopOffersService.getOffersForTask(task, 3);
+
       const notification = await this.notificationsRepo.save(
         this.notificationsRepo.create({
           user: task.car.user,
@@ -97,6 +101,12 @@ export class NotificationsService {
             item: task.regulation.item,
             dueDate: task.dueDate,
             dueMileage: task.dueMileage,
+            offers: offers.map((offer) => ({
+              campaignId: offer.campaignId,
+              workshopName: offer.workshopName,
+              discountType: offer.discountType,
+              discountValue: offer.discountValue,
+            })),
           },
           sourceId: task.id,
           scheduledAt: now,

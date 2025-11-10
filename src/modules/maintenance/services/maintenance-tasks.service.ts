@@ -12,11 +12,16 @@ import {
 } from '../../../entities/maintenance-task.entity';
 import { MaintenanceLog } from '../../../entities/maintenance-log.entity';
 import { MaintenancePlannerService } from './maintenance-planner.service';
+import {
+  WorkshopCampaignRedemption,
+  WorkshopCampaignRedemptionStatus,
+} from '../../../entities/workshop-campaign-redemption.entity';
 
 interface CompleteTaskPayload {
   mileage: number;
   notes?: string;
   performedAt?: Date;
+  redemptionId?: string;
 }
 
 @Injectable()
@@ -28,6 +33,8 @@ export class MaintenanceTasksService {
     private readonly tasksRepo: Repository<MaintenanceTask>,
     @InjectRepository(MaintenanceLog)
     private readonly logsRepo: Repository<MaintenanceLog>,
+    @InjectRepository(WorkshopCampaignRedemption)
+    private readonly redemptionRepo: Repository<WorkshopCampaignRedemption>,
     private readonly planner: MaintenancePlannerService,
   ) {}
 
@@ -92,6 +99,17 @@ export class MaintenanceTasksService {
 
     await this.tasksRepo.save(task);
 
+    let redemption: WorkshopCampaignRedemption | null = null;
+    if (params.payload.redemptionId) {
+      redemption = await this.redemptionRepo.findOne({
+        where: { id: params.payload.redemptionId, user: { id: params.userId } },
+      });
+
+      if (!redemption) {
+        throw new NotFoundException('Campaign redemption not found');
+      }
+    }
+
     const log = await this.logsRepo.save(
       this.logsRepo.create({
         car,
@@ -121,6 +139,14 @@ export class MaintenanceTasksService {
     car.lastMileageUpdate = params.payload.performedAt ?? new Date();
     await this.carRepo.save(car);
     await this.planner.updateCarNextMaintenance(car.id);
+
+    if (redemption) {
+      redemption.status = WorkshopCampaignRedemptionStatus.REDEEMED;
+      redemption.maintenanceTask = task;
+      redemption.car = car;
+      redemption.redeemedAt = params.payload.performedAt ?? new Date();
+      await this.redemptionRepo.save(redemption);
+    }
 
     return { task, log };
   }
