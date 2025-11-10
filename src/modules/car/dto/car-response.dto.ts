@@ -1,5 +1,5 @@
 // src/car/dto/car-response.dto.ts
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CarResponseDto {
   @ApiProperty({ example: 'uuid', description: 'Car ID' })
@@ -14,8 +14,8 @@ export class CarResponseDto {
   @ApiProperty({ example: 'Corolla', description: 'Model of the car' })
   model: string;
 
-  @ApiProperty({ example: 2020, description: 'Year of manufacture' })
-  year: number;
+  @ApiPropertyOptional({ example: 2020, description: 'Year of manufacture' })
+  year?: number;
 
   @ApiProperty({ example: 45000, description: 'Current mileage (in km)' })
   mileage: number;
@@ -24,8 +24,23 @@ export class CarResponseDto {
     example: 15000,
     description: 'Average annual mileage (in km)',
   })
-  averageMileagePerYear: number;
+  annualMileage: number;
 
   @ApiProperty({ example: 'user-uuid', description: 'User ID' })
   userId: number;
+
+  @ApiPropertyOptional({
+    description: 'Decoded VIN payload returned by provider',
+  })
+  vinDecodedData?: Record<string, unknown>;
+
+  @ApiPropertyOptional({
+    description: 'Estimated mileage when next maintenance is due',
+  })
+  nextMaintenanceMileage?: number;
+
+  @ApiPropertyOptional({
+    description: 'Estimated date for next maintenance check',
+  })
+  nextMaintenanceDate?: Date;
 }

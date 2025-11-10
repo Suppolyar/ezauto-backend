@@ -22,11 +22,10 @@ import { CreateCarDto } from '../dto/create-car.dto';
 import { CarResponseDto } from '../dto/car-response.dto';
 import { Request as ExpressRequest } from 'express';
 import { mapCarToDto, mapCarsToDtos } from '../lib/map-car-to-dto';
+import { JwtUserPayload } from '../../../shared/types/jwt-payload';
 
 interface AuthRequest extends ExpressRequest {
-  user: {
-    userId: string;
-  };
+  user: JwtUserPayload;
 }
 
 @ApiTags('Car')
@@ -43,7 +42,7 @@ export class CarController {
     @Body() dto: CreateCarDto,
     @Request() req: AuthRequest,
   ): Promise<CarResponseDto> {
-    const car = await this.carService.create(dto, req.user.userId);
+    const car = await this.carService.create(dto, req.user.id);
 
     return mapCarToDto(car);
   }
@@ -52,7 +51,7 @@ export class CarController {
   @ApiOperation({ summary: 'Get all cars for the current user' })
   @ApiResponse({ status: 200, type: [CarResponseDto] })
   async findMy(@Request() req: AuthRequest): Promise<CarResponseDto[]> {
-    const cars = await this.carService.findMyCars(req.user.userId);
+    const cars = await this.carService.findMyCars(req.user.id);
 
     return mapCarsToDtos(cars);
   }
@@ -65,7 +64,7 @@ export class CarController {
     @Param('id') id: string,
     @Request() req: AuthRequest,
   ): Promise<CarResponseDto> {
-    const car = await this.carService.findOne(id, req.user.userId);
+    const car = await this.carService.findOne(id, req.user.id);
 
     if (!car) throw new NotFoundException('Car not found');
 
@@ -80,7 +79,7 @@ export class CarController {
     @Body() dto: Partial<CreateCarDto>,
     @Request() req: AuthRequest,
   ): Promise<CarResponseDto> {
-    const car = await this.carService.update(id, dto, req.user.userId);
+    const car = await this.carService.update(id, dto, req.user.id);
 
     return mapCarToDto(car);
   }
@@ -89,6 +88,6 @@ export class CarController {
   @ApiOperation({ summary: 'Delete a car by ID' })
   @ApiResponse({ status: 204, description: 'Car successfully deleted' })
   remove(@Param('id') id: string, @Request() req: AuthRequest): Promise<void> {
-    return this.carService.remove(id, req.user.userId);
+    return this.carService.remove(id, req.user.id);
   }
 }

@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsIn } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateCarDto {
@@ -9,17 +9,29 @@ export class CreateCarDto {
   @IsString()
   vin!: string;
 
-  @ApiProperty({ example: 'Toyota', description: 'Car brand' })
+  @ApiPropertyOptional({ example: 'Toyota', description: 'Car brand' })
+  @IsOptional()
   @IsString()
-  brand!: string;
+  brand?: string;
 
-  @ApiProperty({ example: 'Corolla', description: 'Car model' })
+  @ApiPropertyOptional({ example: 'Corolla', description: 'Car model' })
+  @IsOptional()
   @IsString()
-  model!: string;
+  model?: string;
 
-  @ApiProperty({ example: 2020, description: 'Year of manufacture' })
+  @ApiPropertyOptional({ example: 2020, description: 'Year of manufacture' })
+  @IsOptional()
   @IsNumber()
-  year!: number;
+  year?: number;
+
+  @ApiPropertyOptional({
+    example: 'base',
+    description: 'Type of the car used for regulation matching',
+    enum: ['base', 'sport', 'luxury'],
+  })
+  @IsOptional()
+  @IsIn(['base', 'sport', 'luxury'])
+  type?: 'base' | 'sport' | 'luxury';
 
   @ApiProperty({
     example: 45000,
@@ -33,7 +45,7 @@ export class CreateCarDto {
     description: 'Average annual mileage (in kilometers)',
   })
   @IsNumber()
-  averageMileagePerYear!: number;
+  annualMileage!: number;
 
   @ApiPropertyOptional({
     example: '123e4567-e89b-12d3-a456-426614174000',

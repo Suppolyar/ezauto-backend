@@ -35,7 +35,7 @@ export class AuthService {
 
     await this.userRepo.save(user);
 
-    return { accessToken: this.jwtService.sign({ sub: user.id }) };
+    return { accessToken: this.signToken(user) };
   }
 
   async validateUser(
@@ -51,7 +51,16 @@ export class AuthService {
     if (!isMatch) throw new UnauthorizedException('Invalid password');
 
     return {
-      accessToken: this.jwtService.sign({ sub: user.id }),
+      accessToken: this.signToken(user),
     };
+  }
+
+  private signToken(user: User): string {
+    return this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    });
   }
 }

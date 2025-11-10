@@ -7,7 +7,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const API_PREFIX = 'api';
-  const PORT = Number(process.env.PORT ?? 3000);
+  const PORT = Number(process.env.PORT || 3000);
+  const HOST = process.env.HOST || '0.0.0.0'; // важно для Railway
 
   app.enableCors();
   app.setGlobalPrefix(API_PREFIX);
@@ -15,10 +16,13 @@ async function bootstrap() {
 
   setupSwagger(app, API_PREFIX);
 
-  await app.listen(PORT);
+  await app.listen(PORT, HOST);
 
-  Logger.log(`🚀 App is running: http://localhost:${PORT}/${API_PREFIX}`);
-  Logger.log(`📚 Swagger docs: http://localhost:${PORT}/${API_PREFIX}/docs`);
+  const publicUrl =
+    process.env.PUBLIC_URL || process.env.BASE_URL || `http://${HOST}:${PORT}`;
+
+  Logger.log(`🚀 App is running: ${publicUrl}/${API_PREFIX}`);
+  Logger.log(`📚 Swagger docs: ${publicUrl}/${API_PREFIX}/docs`);
 }
 
 void bootstrap();

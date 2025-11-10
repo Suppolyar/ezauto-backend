@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CarModule } from '../modules/car/car.module';
 import { ProfileModule } from '../modules/profile/profile.module';
 import { MaintenanceModule } from '../modules/maintenance/maintenance.module';
+import { NotificationsModule } from '../modules/notifications/notifications.module';
 import configuration from '../config/configuration';
 
 @Module({
@@ -16,9 +17,10 @@ import configuration from '../config/configuration';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      ssl:
+        (process.env.DATABASE_SSL ?? '').toLowerCase() === 'true'
+          ? { rejectUnauthorized: false }
+          : undefined,
       autoLoadEntities: true,
       synchronize: false,
     }),
@@ -26,6 +28,7 @@ import configuration from '../config/configuration';
     CarModule,
     ProfileModule,
     MaintenanceModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}

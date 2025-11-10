@@ -1,25 +1,29 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { MaintenanceTask } from './maintenance-task.entity';
 
 @Entity('maintenance_regulations')
 export class MaintenanceRegulation {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  carType: 'base' | 'sport' | 'luxury';
+  carType!: 'base' | 'sport' | 'luxury';
 
   @Column()
-  item: string;
+  item!: string;
 
   @Column()
-  intervalMiles: number;
+  intervalMiles!: number;
 
   @Column()
-  intervalMonths: number;
+  intervalMonths!: number;
 
   @Column()
-  description: string;
+  description!: string;
 
   @Column({ nullable: true })
   severity?: 'low' | 'medium' | 'high';
+
+  @OneToMany(() => MaintenanceTask, (task) => task.regulation)
+  tasks!: MaintenanceTask[];
 }
