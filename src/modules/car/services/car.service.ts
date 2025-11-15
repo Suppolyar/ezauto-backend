@@ -10,6 +10,7 @@ import { Car } from '../../../entities/car.entity';
 import { VinDecoderService } from '../../vin/services/vin-decoder.service';
 import { MaintenancePlannerService } from '../../maintenance/services/maintenance-planner.service';
 import { User } from '../../auth/entities/user.entity';
+import { CarTypeResolverService } from './car-type-resolver.service';
 
 @Injectable()
 export class CarService {
@@ -18,6 +19,7 @@ export class CarService {
     private readonly carRepo: Repository<Car>,
     private readonly vinDecoder: VinDecoderService,
     private readonly maintenancePlanner: MaintenancePlannerService,
+    private readonly carTypeResolver: CarTypeResolverService,
   ) {}
 
   async create(dto: CreateCarDto, userId: number) {
@@ -28,7 +30,13 @@ export class CarService {
     }
 
     const vinData = await this.vinDecoder.decode(dto.vin);
-    const inferredType = dto.type ?? this.inferTypeFromVinPayload(vinData);
+    const inferredType =
+      dto.type ??
+      (await this.carTypeResolver.resolveFromVinData({
+        make: vinData?.make,
+        model: vinData?.model,
+        bodyClass: vinData?.bodyClass,
+      }));
 
     const car = this.carRepo.create({
       vin: dto.vin,
@@ -60,17 +68,6 @@ export class CarService {
 
       throw error;
     }
-  }
-
-  inferTypeFromVinPayload(
-    payload: Awaited<ReturnType<VinDecoderService['decode']>>,
-  ): 'base' | 'sport' | 'luxury' {
-    const bodyClass = payload?.bodyClass?.toLowerCase() ?? '';
-
-    if (bodyClass.includes('sport')) return 'sport';
-    if (bodyClass.includes('luxury')) return 'luxury';
-
-    return 'base';
   }
 
   findMyCars(userId: number) {

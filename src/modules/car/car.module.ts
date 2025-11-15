@@ -9,6 +9,8 @@ import { MaintenanceTask } from '../../entities/maintenance-task.entity';
 import { MaintenanceLog } from '../../entities/maintenance-log.entity';
 import { MaintenanceModule } from '../maintenance/maintenance.module';
 import { VinModule } from '../vin/vin.module';
+import { CarTypeRule } from '../../entities/car-type-rule.entity';
+import { CarTypeResolverService } from './services/car-type-resolver.service';
 
 @Module({
   imports: [
@@ -18,11 +20,12 @@ import { VinModule } from '../vin/vin.module';
       MaintenanceRegulation,
       MaintenanceTask,
       MaintenanceLog,
+      CarTypeRule,
     ]),
     MaintenanceModule,
     VinModule,
   ],
   controllers: [CarController],
-  providers: [CarService],
+  providers: [CarService, CarTypeResolverService],
 })
 export class CarModule {}
