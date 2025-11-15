@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { MaintenanceRecommendationDto } from './maintenance-recommendation.dto';
+import { MaintenanceRegulationDto } from './maintenance-regulation.dto';
 
 export class MaintenanceTaskResponseDto {
   @ApiProperty()
@@ -24,6 +24,6 @@ export class MaintenanceTaskResponseDto {
   @ApiPropertyOptional({ description: 'Mileage at completion' })
   completedMileage?: number;
 
-  @ApiProperty({ type: MaintenanceRecommendationDto })
-  regulation!: MaintenanceRecommendationDto;
+  @ApiProperty({ type: MaintenanceRegulationDto })
+  regulation!: MaintenanceRegulationDto;
 }

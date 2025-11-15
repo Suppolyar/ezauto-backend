@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { CreateCarDto } from '../dto/create-car.dto';
 import { Car } from '../../../entities/car.entity';
 import { VinDecoderService } from '../../vin/services/vin-decoder.service';
@@ -45,10 +45,21 @@ export class CarService {
       lastMileageUpdate: new Date(),
     });
 
-    const savedCar = await this.carRepo.save(car);
-    await this.maintenancePlanner.initializeTasksForCar(savedCar);
+    try {
+      const savedCar = await this.carRepo.save(car);
+      await this.maintenancePlanner.initializeTasksForCar(savedCar);
 
-    return savedCar;
+      return savedCar;
+    } catch (error) {
+      if (
+        error instanceof QueryFailedError &&
+        (error.driverError as { code?: string })?.code === '23505'
+      ) {
+        throw new BadRequestException('Car with this VIN already exists');
+      }
+
+      throw error;
+    }
   }
 
   inferTypeFromVinPayload(

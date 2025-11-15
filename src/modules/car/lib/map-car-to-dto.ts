@@ -10,6 +10,7 @@ export const mapCarToDto = (car: Car): CarResponseDto => ({
   year: car.year,
   mileage: car.mileage,
   annualMileage: car.annualMileage,
+  type: car.type,
   userId: car.user.id,
   vinDecodedData: car.vinDecodedData,
   nextMaintenanceMileage: car.nextMaintenanceMileage,

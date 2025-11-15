@@ -1,22 +1,33 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { MaintenanceRegulationDto } from './maintenance-regulation.dto';
+
+export type MaintenanceRecommendationReason =
+  | 'overdue'
+  | 'due_soon_date'
+  | 'due_soon_mileage'
+  | 'scheduled';
 
 export class MaintenanceRecommendationDto {
-  @ApiProperty({ example: 'Engine Oil' })
-  item: string;
+  @ApiProperty({ example: '6aef90c9-83a6-4d5d-8c7e-3320a7dfb53d' })
+  taskId!: string;
 
-  @ApiProperty({ example: 5000 })
-  intervalMiles: number;
+  @ApiProperty({ type: MaintenanceRegulationDto })
+  regulation!: MaintenanceRegulationDto;
 
-  @ApiProperty({ example: 6 })
-  intervalMonths: number;
+  @ApiPropertyOptional({
+    description: 'Date when the maintenance task becomes due',
+  })
+  dueDate?: Date;
 
-  @ApiProperty({ example: 'Replace engine oil and filter' })
-  description: string;
+  @ApiPropertyOptional({
+    description: 'Mileage when the maintenance task becomes due',
+  })
+  dueMileage?: number;
 
   @ApiProperty({
-    example: 'medium',
-    enum: ['low', 'medium', 'high'],
-    required: false,
+    description: 'Why this recommendation is shown',
+    enum: ['overdue', 'due_soon_date', 'due_soon_mileage', 'scheduled'],
+    example: 'due_soon_date',
   })
-  severity?: 'low' | 'medium' | 'high';
+  reason!: MaintenanceRecommendationReason;
 }

@@ -26,6 +26,13 @@ export class CarResponseDto {
   })
   annualMileage: number;
 
+  @ApiProperty({
+    example: 'base',
+    description: 'Type of the car used for regulation matching',
+    enum: ['base', 'sport', 'luxury'],
+  })
+  type: 'base' | 'sport' | 'luxury';
+
   @ApiProperty({ example: 'user-uuid', description: 'User ID' })
   userId: number;
 
